@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import { EmptyTable, TableHead, TableRows } from './table_components';
 import classes from './Table.module.scss';
 
+// thinking about including pagination and sorting. but it might be a bit too advance
+
 const Table = ({ columnDefs, rowData, onComplete, onDelete, onAddNew, title }) => {
   const gridTemplateColumns = [...columnDefs, {}].map(_ => 'minmax(60px, 1fr)').join(' ');
 

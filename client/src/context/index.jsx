@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory, useLocation } from 'react-router-dom';
-import { parseStringifiedJSON } from 'utils';
+import { parseStringifiedJSON, mapErrorCodeToMessage } from 'utils';
 
 export const AppContext = createContext({});
 
@@ -14,12 +14,13 @@ export const AppContextProvider = ({ children }) => {
 
   const signIn = async credentials => {
     const { data } = await axios.post('/sign-in', credentials);
-    const userToSet = data.user;
 
-    if (!userToSet) {
+    if (data.error) {
       await signOut();
-      throw new Error('Sign in Error');
+      throw new Error(mapErrorCodeToMessage(data.error));
     }
+
+    const userToSet = data.user;
 
     setCurrentUser(userToSet);
     sessionStorage.setItem('CURRENT_USER', JSON.stringify(userToSet));

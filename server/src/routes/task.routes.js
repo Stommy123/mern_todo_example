@@ -1,6 +1,6 @@
 import { Router as ExpressRouter } from 'express';
 import { Task } from '../models';
-import { wrappedErrorMessage, regexString, isNil, nullifyEmptyValues } from '../utils';
+import { wrappedErrorMessage, regexString, nullifyEmptyValues } from '../utils';
 
 const Router = ExpressRouter();
 
@@ -19,7 +19,7 @@ Router.get('/', async (req, res) => {
 
     res.send({ tasks });
   } catch (err) {
-    res.send(wrappedErrorMessage('Failed to retrieve list of tasks', err));
+    res.send(wrappedErrorMessage('LIST_TASKS_FAILED', err));
   }
 });
 
@@ -32,7 +32,7 @@ Router.get('/find/:id', async (req, res) => {
 
     res.send({ task });
   } catch (err) {
-    res.send(wrappedErrorMessage('Failed to retrieve task by id', err));
+    res.send(wrappedErrorMessage('FIND_TASK_FAILED', err));
   }
 });
 
@@ -41,13 +41,13 @@ Router.get('/mine', async (req, res) => {
   try {
     const { _id } = req.session.currentUser || {};
 
-    if (!_id) return res.send(wrappedErrorMessage('Not logged in'));
+    if (!_id) throw new Error('UNAUTHORIZED_USER');
 
     const myTasks = await Task.find({ user: _id }).populate('user');
 
     res.send({ tasks: myTasks });
   } catch (err) {
-    res.send(wrappedErrorMessage("Failed to retrieve current user's tasks", err));
+    res.send(wrappedErrorMessage('LIST_TASKS_FAILED', err));
   }
 });
 
@@ -56,19 +56,17 @@ Router.post('/', async (req, res) => {
   try {
     const { _id } = req.session.currentUser || {};
 
-    if (!_id) return res.send(wrappedErrorMessage('Not logged in'));
-    console.log('im here', req.body);
-    const newTaskData = nullifyEmptyValues(req.body);
+    if (!_id) throw new Error('UNAUTHORIZED_USER');
 
-    console.log('new task data', newTaskData);
+    const newTaskData = nullifyEmptyValues(req.body);
 
     const taskSchema = new Task({ ...newTaskData, user: _id });
 
     const newTask = await taskSchema.save();
-    console.log('new task', newTask);
+
     res.send({ task: newTask });
   } catch (err) {
-    res.send(wrappedErrorMessage('Failed to create new task', err));
+    res.send(wrappedErrorMessage('CREATE_TASK_FAILED', err));
   }
 });
 
@@ -78,14 +76,13 @@ Router.patch('/:id', async (req, res) => {
     const { id } = req.params;
     const { _id: currentUserId } = req.session.currentUser || {};
 
-    if (!id) return res.send(wrappedErrorMessage('ID required to updated task'));
+    if (!id) throw new Error('INVALID_ID');
 
     const updatedProperties = nullifyEmptyValues(req.body);
 
     const taskToUpdate = await Task.findOne({ _id: id });
 
-    if (String(taskToUpdate.user) !== currentUserId)
-      res.send(wrappedErrorMessage('Failed to update - This task does not belong to the current user'));
+    if (String(taskToUpdate.user) !== currentUserId) throw new Error('NO_PERMISSION');
 
     const updatedTask = await Task.findOneAndUpdate({ _id: id }, updatedProperties, {
       new: true,
@@ -93,7 +90,7 @@ Router.patch('/:id', async (req, res) => {
 
     res.send({ task: updatedTask, updated: true });
   } catch (err) {
-    res.send(wrappedErrorMessage('Failed to update task', err));
+    res.send(wrappedErrorMessage('UPDATE_TASK_FAILED', err));
   }
 });
 
@@ -103,18 +100,17 @@ Router.delete('/:id', async (req, res) => {
     const { id } = req.params;
     const { _id: currentUserId } = req.session.currentUser || {};
 
-    if (!id) return res.send(wrappedErrorMessage('ID required to delete task'));
+    if (!id) throw new Error('INVALID_ID');
 
     const taskToDelete = await Task.findOne({ _id: id });
 
-    if (String(taskToDelete.user) !== currentUserId)
-      res.send(wrappedErrorMessage('Failed to delete - This task does not belong to the current user'));
+    if (String(taskToDelete.user) !== currentUserId) throw new Error('NO_PERMISSION');
 
     const deletedTask = await Task.deleteOne({ _id: id });
 
     res.send({ task: deletedTask, deleted: true });
   } catch (err) {
-    res.send(wrappedErrorMessage('Failed to delete task', err));
+    res.send(wrappedErrorMessage('DELETE_TASK_FAILED', err));
   }
 });
 

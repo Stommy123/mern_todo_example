@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useModal } from 'hooks';
 import { Table, SectionWrapper, FormContent } from 'components';
+import { mapErrorCodeToMessage } from 'utils';
 import { COLUMN_DEFS } from './Tasks.schema';
 import classes from './Tasks.module.scss';
 
@@ -25,7 +26,7 @@ const Tasks = _ => {
       setNeedToRefetch(false);
     } catch (err) {
       console.error('Failed to fetch task', err);
-      openTaskErrorModal();
+      openTaskErrorModal(mapErrorCodeToMessage(err));
     }
   };
 
@@ -35,12 +36,12 @@ const Tasks = _ => {
 
       const { data } = await axios.patch(`/tasks/${_id}`, { isCompleted: updatedStatus });
 
-      if (!data.updated) return openTaskErrorModal();
+      if (data.updated) return setNeedToRefetch(true);
 
-      setNeedToRefetch(true);
+      throw new Error(mapErrorCodeToMessage(data.error));
     } catch (err) {
       console.error('Failed to complete task', err);
-      openTaskErrorModal();
+      openTaskErrorModal(err.message);
     }
   };
 
@@ -48,12 +49,12 @@ const Tasks = _ => {
     try {
       const { data } = await axios.delete(`/tasks/${_id}`);
 
-      if (!data.deleted) return openTaskErrorModal();
+      if (data.deleted) return setNeedToRefetch(true);
 
-      setNeedToRefetch(true);
+      throw new Error(mapErrorCodeToMessage(data.error));
     } catch (err) {
       console.error('Failed to delete task', err);
-      openTaskErrorModal();
+      openTaskErrorModal(err.message);
     }
   };
 
@@ -64,12 +65,12 @@ const Tasks = _ => {
 
     try {
       const { data } = await axios.post('/tasks', newTaskData);
-      if (!data.task) throw new Error('Task Creation Error');
+      if (data.task) setNeedToRefetch(true);
 
-      setNeedToRefetch(true);
+      throw new Error(mapErrorCodeToMessage(data.error));
     } catch (err) {
-      openTaskErrorModal();
       console.error('Error creating task', err);
+      openTaskErrorModal(err.message);
     } finally {
       setNewTaskData(INITIAL_NEW_TASK);
       closeNewTaskModal();
@@ -94,11 +95,7 @@ const Tasks = _ => {
           onAddNew={openNewTaskModal}
           title='My Tasks'
         />
-        <TaskErrorModal icon='error' className='errorModal'>
-          <div className={classes.modalText}>
-            <h3>Error Performing Task Operation</h3>
-          </div>
-        </TaskErrorModal>
+        <TaskErrorModal icon='error' className='errorModal' />
         <NewTaskModal hideClose header='New Task Information'>
           <form className={classes.newTaskForm} onSubmit={handleCreateNewTask}>
             <FormContent.TaskFormContent onChange={handleFormChange} {...newTaskData} />

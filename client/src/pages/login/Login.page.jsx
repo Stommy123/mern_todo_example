@@ -3,6 +3,7 @@ import axios from 'axios';
 import { AppContext } from 'context';
 import { FormContent, SectionWrapper } from 'components';
 import { useModal } from 'hooks';
+import { mapErrorCodeToMessage } from 'utils';
 import classes from './Login.module.scss';
 
 const INITIAL_FORM_DATA = {
@@ -30,7 +31,7 @@ const Login = _ => {
   const handleSignUp = async _ => {
     const { data } = await axios.post('/users', formData);
 
-    if (data.error) throw new Error('Signup Error');
+    if (data.error) throw new Error(mapErrorCodeToMessage(data.error));
 
     openSignUpSuccesModal();
   };
@@ -44,8 +45,8 @@ const Login = _ => {
       await (isSigningUp ? handleSignUp() : signIn(formData));
 
       setFormData(INITIAL_FORM_DATA);
-    } catch {
-      openErrorModal();
+    } catch (err) {
+      openErrorModal(err.message);
     }
   };
 
@@ -71,11 +72,7 @@ const Login = _ => {
             <button onClick={handleSwapAuthForm}>{swapFormText}</button>
           </div>
         </form>
-        <ErrorModal icon='error' className='errorModal'>
-          <div className={classes.modalText}>
-            <h3>{isSigningUp ? 'Error signing up' : 'Could not locate user with email/password'}</h3>
-          </div>
-        </ErrorModal>
+        <ErrorModal icon='error' className='errorModal' />
         <SignUpSuccessModal icon='check_circle' className='successModal'>
           <div className={classes.modalText}>
             <h3>User Successfully Created</h3>

@@ -33,6 +33,6 @@ export const parseStringifiedJSON = (item, defaultValue) => {
 
 export const noop = _ => ({});
 
-export const wrappedErrorMessage = (message, err) => ({ error: { message, ...(err && { err: err.toString() }) } });
+export const wrappedErrorMessage = (reason, err) => ({ error: { reason, ...(err && { code: err.message }) } });
 
 export const regexString = (str = '') => new RegExp(str.trim(), 'i');

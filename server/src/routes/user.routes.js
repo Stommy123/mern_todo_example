@@ -11,7 +11,7 @@ Router.get('/', async (req, res) => {
 
     res.send({ users });
   } catch (err) {
-    res.send(wrappedErrorMessage('Failed to retrieve list of users', err));
+    res.send(wrappedErrorMessage('LIST_USERS_FAILED', err));
   }
 });
 
@@ -24,7 +24,7 @@ Router.get('/find/:id', async (req, res) => {
 
     res.send({ user });
   } catch (err) {
-    res.send(wrappedErrorMessage('Failed to retrieve user by id', err));
+    res.send(wrappedErrorMessage('FIND_USER_FAILED', err));
   }
 });
 
@@ -33,13 +33,13 @@ Router.get('/current', async (req, res) => {
   try {
     const { _id } = req.session.currentUser || {};
 
-    if (!_id) return res.send(wrappedErrorMessage('Not logged in'));
+    if (!_id) throw new Error('UNAUTHORIZED_USER');
 
     const currentUser = await User.findById(id);
 
     res.send({ user: currentUser });
   } catch (err) {
-    res.send(wrappedErrorMessage('Failed to retrieve current user', err));
+    res.send(wrappedErrorMessage('FIND_USER_FAILED', err));
   }
 });
 
@@ -51,7 +51,7 @@ Router.post('/', async (req, res) => {
 
     res.send({ user: newUser });
   } catch (err) {
-    res.send(wrappedErrorMessage('Failed to create new user', err));
+    res.send(wrappedErrorMessage('CREATE_USER_FAILED', err));
   }
 });
 
@@ -60,7 +60,7 @@ Router.patch('/', async (req, res) => {
   try {
     const { _id } = req.session.currentUser || {};
 
-    if (!_id) return res.send(wrappedErrorMessage('Not logged in'));
+    if (!_id) throw new Error('UNAUTHORIZED_USER');
 
     const updatedProperties = nullifyEmptyValues(req.body);
 
@@ -68,7 +68,7 @@ Router.patch('/', async (req, res) => {
 
     res.send({ user: updatedUser, updated: true });
   } catch (err) {
-    res.send(wrappedErrorMessage('Failed to update user', err));
+    res.send(wrappedErrorMessage('UPDATE_USER_FAILED', err));
   }
 });
 
@@ -81,7 +81,7 @@ Router.delete('/:id', async (req, res) => {
 
     res.send({ user: deletedUser, deleted: true });
   } catch (err) {
-    res.send(wrappedErrorMessage('Failed to delete user', err));
+    res.send(wrappedErrorMessage('DELETE_USER_FAILED', err));
   }
 });
 

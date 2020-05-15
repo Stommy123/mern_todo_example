@@ -17,24 +17,24 @@ Router.post('/sign-in', async (req, res) => {
     if (_id) {
       const currentUser = await User.findById(_id);
 
-      if (!currentUser) return res.send(wrappedErrorMessage('Invalid user id'));
+      if (!currentUser) throw new Error('INVALID_ID');
 
       req.session.currentUser = currentUser;
 
       return res.send({ user: currentUser });
     }
 
-    if (!email || !password) return res.send(wrappedErrorMessage('Both email and password required'));
+    if (!email || !password) throw new Error('EMAIL_AND_PASSWORD_REQUIRED');
 
     const authenticatedUser = await User.authenticate(email, password);
 
-    if (!authenticatedUser) return res.send(wrappedErrorMessage('Incorrect email or password'));
+    if (!authenticatedUser) throw new Error('INCORRECT_EMAIL_OR_PASSWORD');
 
     req.session.currentUser = authenticatedUser;
 
     res.send({ user: authenticatedUser });
   } catch (err) {
-    res.send(wrappedErrorMessage('Failed to sign in', err));
+    res.send(wrappedErrorMessage('SIGN_IN_FAILED', err));
   }
 });
 
