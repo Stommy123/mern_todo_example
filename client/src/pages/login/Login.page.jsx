@@ -33,7 +33,7 @@ const Login = _ => {
 
     if (data.error) throw new Error(mapErrorCodeToMessage(data.error));
 
-    openSignUpSuccesModal();
+    openSignUpSuccesModal('User created successfully');
   };
 
   const handleFormChange = field => evt => setFormData({ ...formData, [field]: evt.target.value });
@@ -73,11 +73,7 @@ const Login = _ => {
           </div>
         </form>
         <ErrorModal icon='error' className='errorModal' />
-        <SignUpSuccessModal icon='check_circle' className='successModal'>
-          <div className={classes.modalText}>
-            <h3>User Successfully Created</h3>
-          </div>
-        </SignUpSuccessModal>
+        <SignUpSuccessModal icon='check_circle' className='successModal' />
       </div>
     </SectionWrapper>
   );
