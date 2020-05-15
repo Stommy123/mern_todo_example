@@ -1,0 +1,16 @@
+.tableHeadContainer {
+  display: grid;
+  grid-column-gap: 10px;
+  grid-template-rows: 40px;
+  border-bottom: 1px solid black;
+  height: 100%;
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid black;
+  }
+  div:last-of-type {
+    border-right: none;
+  }
+}

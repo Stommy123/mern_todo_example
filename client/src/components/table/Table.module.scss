@@ -1,0 +1,30 @@
+.tableContainer {
+  border: 1px solid black;
+  height: fit-content;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  height: 60px;
+  h3 {
+    justify-self: flex-start;
+  }
+  button {
+    justify-self: flex-end;
+    width: 120px;
+    height: 30px;
+    background-color: #02a6f2;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-right: 5px;
+  }
+}
+
+.withHeader {
+  margin-bottom: 20px;
+}

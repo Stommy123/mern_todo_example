@@ -1,0 +1,19 @@
+.row {
+  display: grid;
+  grid-template-rows: minmax(25px, fit-content);
+  grid-column-gap: 10px;
+  min-height: 40px;
+  div:last-of-type {
+    border-right: none;
+  }
+}
+
+.cell {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid black;
+  padding: 10px 0;
+  word-break: break-word;
+}

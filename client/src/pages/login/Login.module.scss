@@ -1,0 +1,41 @@
+.loginWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 60%;
+  input {
+    height: 24px;
+    width: 250px;
+    margin-bottom: 20px;
+    font-size: 18px;
+  }
+}
+
+.formActions {
+  display: flex;
+  button {
+    min-height: 40px;
+    min-width: 120px;
+    border-radius: 5px;
+    background-color: #02a6f2;
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+  }
+}
+
+.modalText {
+  display: flex;
+  justify-content: center;
+  h3 {
+    font-size: 25px;
+    text-align: center;
+  }
+}

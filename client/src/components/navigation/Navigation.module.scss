@@ -1,0 +1,41 @@
+.navigationWrapper {
+  display: flex;
+  align-items: center;
+  height: 45px;
+  border-bottom: 1px solid black;
+  margin-bottom: 10px;
+  padding: 5px 20px;
+}
+
+.title {
+  width: 20%;
+  white-space: nowrap;
+  h1 {
+    font-size: 20px;
+  }
+}
+
+.links {
+  display: flex;
+  justify-content: space-around;
+  width: 60%;
+  a {
+    font-weight: 600;
+    font-size: 15px;
+  }
+}
+
+.authLink {
+  display: flex;
+  justify-content: center;
+  width: 25%;
+  button {
+    height: 40px;
+    width: 120px;
+    border-radius: 5px;
+    background-color: #02a6f2;
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+  }
+}

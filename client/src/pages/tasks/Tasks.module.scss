@@ -1,0 +1,33 @@
+.tasksWrapper {
+  padding: 25px;
+}
+
+.modalText {
+  display: flex;
+  justify-content: center;
+  h3 {
+    font-size: 25px;
+    text-align: center;
+  }
+}
+
+.newTaskForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  input {
+    height: 24px;
+    width: 250px;
+    margin-bottom: 20px;
+    font-size: 18px;
+  }
+  button {
+    min-height: 40px;
+    min-width: 120px;
+    border-radius: 5px;
+    background-color: #02a6f2;
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+  }
+}
