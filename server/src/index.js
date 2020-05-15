@@ -12,8 +12,6 @@ const MongoStore = Mongo(session);
 
 const { DB_URL } = process.env;
 
-console.log('db url', DB_URL);
-
 mongoose.connect(DB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
