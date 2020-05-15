@@ -10,7 +10,7 @@ const getUserFromStorage = _ => parseStringifiedJSON(sessionStorage.getItem('CUR
 export const AppContextProvider = ({ children }) => {
   const history = useHistory();
   const location = useLocation();
-  const [currentUser, setCurrentUser] = useState(() => getUserFromStorage() || null);
+  const [currentUser, setCurrentUser] = useState(_ => getUserFromStorage() || null);
 
   const signIn = async credentials => {
     const { data } = await axios.post('/sign-in', credentials);
@@ -28,7 +28,7 @@ export const AppContextProvider = ({ children }) => {
     if (isFromLoginPath) history.push('/');
   };
 
-  const signOut = async () => {
+  const signOut = async _ => {
     await axios.post('/sign-out');
 
     setCurrentUser(null);

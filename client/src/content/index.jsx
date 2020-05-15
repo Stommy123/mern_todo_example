@@ -12,7 +12,7 @@ const Content = _ => (
       <Route path='/unauthenticated' component={Unauthenticated} />
       <AuthRoute path='/profile' component={Profile} />
       <AuthRoute path='/tasks' component={Tasks} />
-      <Route component={() => <Redirect to='/' />} />
+      <Route component={_ => <Redirect to='/' />} />
     </Switch>
   </>
 );

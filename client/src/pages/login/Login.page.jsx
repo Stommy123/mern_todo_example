@@ -20,7 +20,7 @@ const Login = _ => {
 
   const [ErrorModal, openErrorModal] = useModal();
   const [SignUpSuccessModal, openSignUpSuccesModal] = useModal({
-    onClose: () => {
+    onClose: _ => {
       setFormData(INITIAL_FORM_DATA);
       setIsSigningUp(false);
     },
