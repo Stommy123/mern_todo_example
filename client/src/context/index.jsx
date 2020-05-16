@@ -16,7 +16,8 @@ export const AppContextProvider = ({ children }) => {
     const { data } = await axios.post('/sign-in', credentials);
 
     if (data.error || !data.success) {
-      await signOut();
+      setCurrentUser(null);
+      sessionStorage.removeItem('CURRENT_USER');
       throw new Error(mapErrorCodeToMessage(data.error));
     }
 
@@ -34,6 +35,7 @@ export const AppContextProvider = ({ children }) => {
 
     setCurrentUser(null);
     sessionStorage.removeItem('CURRENT_USER');
+    history.push('/');
   };
 
   // if there is a user in session storage, we sign them in on intial load

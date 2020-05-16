@@ -59,6 +59,8 @@ const Tasks = _ => {
 
   const handleFormChange = field => e => setNewTaskData({ ...newTaskData, [field]: e.target.value });
 
+  const onAddNew = _ => openNewTaskModal();
+
   const handleCreateNewTask = async e => {
     e.preventDefault();
 
@@ -77,12 +79,7 @@ const Tasks = _ => {
     }
   };
 
-  useEffect(
-    _ => {
-      if (needToRefetch) fetchTasks();
-    },
-    [needToRefetch]
-  );
+  useEffect(_ => void (needToRefetch && fetchTasks()), [needToRefetch]);
 
   return (
     <SectionWrapper className='tasksSection'>
@@ -92,14 +89,19 @@ const Tasks = _ => {
           columnDefs={COLUMN_DEFS}
           onComplete={handleCompleteTask}
           onDelete={handleDeleteTask}
-          onAddNew={openNewTaskModal}
+          onAddNew={onAddNew}
           title='My Tasks'
         />
         <TaskErrorModal icon='error' className='errorModal' />
         <NewTaskModal hideClose header='New Task Information'>
           <form className={classes.newTaskForm} onSubmit={handleCreateNewTask}>
             <FormContent.TaskFormContent onChange={handleFormChange} {...newTaskData} />
-            <button type='submit'>Create Task</button>
+            <div className={classes.taskFormActions}>
+              <button type='submit'>Create Task</button>
+              <button onClick={closeNewTaskModal} type='button'>
+                Cancel
+              </button>
+            </div>
           </form>
         </NewTaskModal>
       </div>

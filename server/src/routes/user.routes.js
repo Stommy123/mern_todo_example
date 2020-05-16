@@ -1,6 +1,6 @@
 import { Router as ExpressRouter } from 'express';
 import { User } from '../models';
-import { wrappedErrorMessage, nullifyEmptyValues } from '../utils';
+import { wrappedErrorMessage, nullifyEmptyValues, wrapSuccessResponse } from '../utils';
 
 const Router = ExpressRouter();
 
@@ -9,7 +9,7 @@ Router.get('/', async (req, res) => {
   try {
     const users = await User.find(req.body);
 
-    res.send({ users, success: true });
+    res.send(wrapSuccessResponse({ users, success: true }));
   } catch (err) {
     res.send(wrappedErrorMessage('LIST_USERS_FAILED', err));
   }
@@ -22,7 +22,7 @@ Router.get('/find/:id', async (req, res) => {
 
     const user = await User.findById(id);
 
-    res.send({ user, success: true });
+    res.send(wrapSuccessResponse({ user, success: true }));
   } catch (err) {
     res.send(wrappedErrorMessage('FIND_USER_FAILED', err));
   }
@@ -37,7 +37,7 @@ Router.get('/current', async (req, res) => {
 
     const currentUser = await User.findById(id);
 
-    res.send({ user: currentUser });
+    res.send(wrapSuccessResponse({ user: currentUser }));
   } catch (err) {
     res.send(wrappedErrorMessage('FIND_USER_FAILED', err));
   }
@@ -49,7 +49,7 @@ Router.post('/', async (req, res) => {
     const userData = new User(req.body);
     const newUser = await userData.save();
 
-    res.send({ user: newUser });
+    res.send(wrapSuccessResponse({ user: newUser }));
   } catch (err) {
     res.send(wrappedErrorMessage('CREATE_USER_FAILED', err));
   }
@@ -66,7 +66,7 @@ Router.patch('/', async (req, res) => {
 
     const updatedUser = await User.findOneAndUpdate({ _id }, updatedProperties, { new: true, useFindAndModify: false });
 
-    res.send({ user: updatedUser, success: true });
+    res.send(wrapSuccessResponse({ user: updatedUser }));
   } catch (err) {
     res.send(wrappedErrorMessage('UPDATE_USER_FAILED', err));
   }
@@ -79,7 +79,7 @@ Router.delete('/:id', async (req, res) => {
 
     const deletedUser = await User.deleteOne({ _id: id });
 
-    res.send({ user: deletedUser, deleted: true });
+    res.send(wrapSuccessResponse({ user: deletedUser }));
   } catch (err) {
     res.send(wrappedErrorMessage('DELETE_USER_FAILED', err));
   }

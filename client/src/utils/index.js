@@ -43,4 +43,7 @@ export const ERROR_MAP = {
   DELETE_TASK_FAILED: 'Failed to delete the task. Please try again',
 };
 
-export const mapErrorCodeToMessage = err => ERROR_MAP[err.code] || ERROR_MAP[err.reason];
+export const mapErrorCodeToMessage = err => {
+  console.log('what is the err', err);
+  return ERROR_MAP[err.code] || ERROR_MAP[err.reason];
+};
