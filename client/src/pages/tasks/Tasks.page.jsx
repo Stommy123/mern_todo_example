@@ -16,7 +16,7 @@ const Tasks = _ => {
   const [tasks, setTasks] = useState([]);
   const [newTaskData, setNewTaskData] = useState(INITIAL_NEW_TASK);
   const [needToRefetch, setNeedToRefetch] = useState(true);
-  const [TaskErrorModal, openTaskErrorModal] = useModal({});
+  const [TaskErrorModal, openTaskErrorModal] = useModal();
   const [NewTaskModal, openNewTaskModal, closeNewTaskModal] = useModal();
 
   const fetchTasks = async _ => {
