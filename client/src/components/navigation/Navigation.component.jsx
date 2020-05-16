@@ -15,9 +15,15 @@ const Navigation = _ => {
         <h1>TODO APP {currentUser && `- ${currentUser.email}`}</h1>
       </div>
       <div className={classes.links}>
-        <NavLink to='/'>Home</NavLink>
-        <NavLink to='/tasks'>Tasks</NavLink>
-        <NavLink to='/profile'>Profile</NavLink>
+        <NavLink exact activeClassName={classes.active} to='/'>
+          Home
+        </NavLink>
+        <NavLink activeClassName={classes.active} to='/tasks'>
+          Tasks
+        </NavLink>
+        <NavLink activeClassName={classes.active} to='/profile'>
+          Profile
+        </NavLink>
       </div>
       <div className={classes.authLink}>
         <button onClick={handleAuth}>{currentUser ? 'Logout' : 'Login'}</button>
