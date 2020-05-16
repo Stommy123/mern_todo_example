@@ -4,7 +4,7 @@ export const isNull = item => item === null;
 
 export const isNil = item => isUndefined(item) || isNull(item);
 
-export const isArray = item => Object.prototype.toString.call(item) === '[object Array]';
+export const isArray = item => Array.isArray(item);
 
 export const isObject = item => !!(typeof item === 'object' && !isArray(item) && item);
 

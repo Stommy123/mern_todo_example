@@ -22,6 +22,7 @@ const Tasks = _ => {
   const fetchTasks = async _ => {
     try {
       const { data } = await axios.get('/tasks/mine');
+
       setTasks(data.tasks || []);
       setNeedToRefetch(false);
     } catch (err) {
@@ -65,7 +66,8 @@ const Tasks = _ => {
 
     try {
       const { data } = await axios.post('/tasks', newTaskData);
-      if (data.task) setNeedToRefetch(true);
+
+      if (data.task) return setNeedToRefetch(true);
 
       throw new Error(mapErrorCodeToMessage(data.error));
     } catch (err) {
