@@ -15,7 +15,7 @@ export const AppContextProvider = ({ children }) => {
   const signIn = async credentials => {
     const { data } = await axios.post('/sign-in', credentials);
 
-    if (data.error) {
+    if (data.error || !data.success) {
       await signOut();
       throw new Error(mapErrorCodeToMessage(data.error));
     }

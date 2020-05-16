@@ -31,7 +31,7 @@ const Login = _ => {
   const handleSignUp = async _ => {
     const { data } = await axios.post('/users', formData);
 
-    if (data.error) throw new Error(mapErrorCodeToMessage(data.error));
+    if (data.error || !data.success) throw new Error(mapErrorCodeToMessage(data.error));
 
     openSignUpSuccesModal('User created successfully');
   };

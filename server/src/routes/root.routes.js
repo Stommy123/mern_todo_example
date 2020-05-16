@@ -1,5 +1,5 @@
 import { Router as ExpressRouter } from 'express';
-import { wrappedErrorMessage } from '../utils';
+import { wrappedErrorMessage, wrapSuccessResponse } from '../utils';
 import { User } from '../models';
 
 const Router = ExpressRouter();
@@ -21,7 +21,7 @@ Router.post('/sign-in', async (req, res) => {
 
       req.session.currentUser = currentUser;
 
-      return res.send({ user: currentUser });
+      return res.send(wrapSuccessResponse({ user: currentUser }));
     }
 
     if (!email || !password) throw new Error('EMAIL_AND_PASSWORD_REQUIRED');
@@ -32,7 +32,7 @@ Router.post('/sign-in', async (req, res) => {
 
     req.session.currentUser = authenticatedUser;
 
-    res.send({ user: authenticatedUser });
+    res.send(wrapSuccessResponse({ user: authenticatedUser }));
   } catch (err) {
     res.send(wrappedErrorMessage('SIGN_IN_FAILED', err));
   }
@@ -42,7 +42,7 @@ Router.post('/sign-in', async (req, res) => {
 Router.post('/sign-out', (req, res) => {
   req.session.destroy();
 
-  res.send({ user: null });
+  res.send(wrapSuccessResponse({ user: null }));
 });
 
 export default Router;

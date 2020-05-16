@@ -1,6 +1,6 @@
 import { Router as ExpressRouter } from 'express';
 import { Task } from '../models';
-import { wrappedErrorMessage, regexString, nullifyEmptyValues } from '../utils';
+import { wrappedErrorMessage, regexString, nullifyEmptyValues, wrapSuccessResponse } from '../utils';
 
 const Router = ExpressRouter();
 
@@ -17,7 +17,7 @@ Router.get('/', async (req, res) => {
 
     const tasks = await Task.find(variables).populate('user');
 
-    res.send({ tasks });
+    res.send(wrapSuccessResponse({ tasks }));
   } catch (err) {
     res.send(wrappedErrorMessage('LIST_TASKS_FAILED', err));
   }
@@ -30,7 +30,7 @@ Router.get('/find/:id', async (req, res) => {
 
     const task = await Task.findById(id);
 
-    res.send({ task });
+    res.send(wrapSuccessResponse({ task }));
   } catch (err) {
     res.send(wrappedErrorMessage('FIND_TASK_FAILED', err));
   }
@@ -45,7 +45,7 @@ Router.get('/mine', async (req, res) => {
 
     const myTasks = await Task.find({ user: _id }).populate('user');
 
-    res.send({ tasks: myTasks });
+    res.send(wrapSuccessResponse({ tasks: myTasks }));
   } catch (err) {
     res.send(wrappedErrorMessage('LIST_TASKS_FAILED', err));
   }
@@ -64,7 +64,7 @@ Router.post('/', async (req, res) => {
 
     const newTask = await taskSchema.save();
 
-    res.send({ task: newTask });
+    res.send(wrapSuccessResponse({ task: newTask }));
   } catch (err) {
     res.send(wrappedErrorMessage('CREATE_TASK_FAILED', err));
   }
@@ -88,7 +88,7 @@ Router.patch('/:id', async (req, res) => {
       new: true,
     });
 
-    res.send({ task: updatedTask, updated: true });
+    res.send(wrapSuccessResponse({ task: updatedTask }));
   } catch (err) {
     res.send(wrappedErrorMessage('UPDATE_TASK_FAILED', err));
   }
@@ -108,7 +108,7 @@ Router.delete('/:id', async (req, res) => {
 
     const deletedTask = await Task.deleteOne({ _id: id });
 
-    res.send({ task: deletedTask, deleted: true });
+    res.send(wrapSuccessResponse({ task: deletedTask }));
   } catch (err) {
     res.send(wrappedErrorMessage('DELETE_TASK_FAILED', err));
   }

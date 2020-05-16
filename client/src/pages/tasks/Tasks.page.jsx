@@ -33,13 +33,11 @@ const Tasks = _ => {
 
   const handleCompleteTask = async ({ _id, isCompleted }) => {
     try {
-      const updatedStatus = !isCompleted;
+      const { data } = await axios.patch(`/tasks/${_id}`, { isCompleted: !isCompleted });
 
-      const { data } = await axios.patch(`/tasks/${_id}`, { isCompleted: updatedStatus });
+      if (data.error || !data.success) throw new Error(mapErrorCodeToMessage(data.error));
 
-      if (data.updated) return setNeedToRefetch(true);
-
-      throw new Error(mapErrorCodeToMessage(data.error));
+      setNeedToRefetch(true);
     } catch (err) {
       console.error('Failed to complete task', err);
       openTaskErrorModal(err.message);
@@ -50,9 +48,9 @@ const Tasks = _ => {
     try {
       const { data } = await axios.delete(`/tasks/${_id}`);
 
-      if (data.deleted) return setNeedToRefetch(true);
+      if (data.error || !data.success) throw new Error(mapErrorCodeToMessage(data.error));
 
-      throw new Error(mapErrorCodeToMessage(data.error));
+      setNeedToRefetch(true);
     } catch (err) {
       console.error('Failed to delete task', err);
       openTaskErrorModal(err.message);
@@ -67,9 +65,9 @@ const Tasks = _ => {
     try {
       const { data } = await axios.post('/tasks', newTaskData);
 
-      if (data.task) return setNeedToRefetch(true);
+      if (data.error || !data.success) throw new Error(mapErrorCodeToMessage(data.error));
 
-      throw new Error(mapErrorCodeToMessage(data.error));
+      setNeedToRefetch(true);
     } catch (err) {
       console.error('Error creating task', err);
       openTaskErrorModal(err.message);

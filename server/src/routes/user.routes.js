@@ -66,7 +66,7 @@ Router.patch('/', async (req, res) => {
 
     const updatedUser = await User.findOneAndUpdate({ _id }, updatedProperties, { new: true, useFindAndModify: false });
 
-    res.send({ user: updatedUser, updated: true });
+    res.send({ user: updatedUser, success: true });
   } catch (err) {
     res.send(wrappedErrorMessage('UPDATE_USER_FAILED', err));
   }
