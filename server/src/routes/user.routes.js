@@ -9,7 +9,7 @@ Router.get('/', async (req, res) => {
   try {
     const users = await User.find(req.body);
 
-    res.send({ users });
+    res.send({ users, success: true });
   } catch (err) {
     res.send(wrappedErrorMessage('LIST_USERS_FAILED', err));
   }
@@ -22,7 +22,7 @@ Router.get('/find/:id', async (req, res) => {
 
     const user = await User.findById(id);
 
-    res.send({ user });
+    res.send({ user, success: true });
   } catch (err) {
     res.send(wrappedErrorMessage('FIND_USER_FAILED', err));
   }
