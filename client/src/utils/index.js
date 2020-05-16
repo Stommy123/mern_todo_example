@@ -44,6 +44,5 @@ export const ERROR_MAP = {
 };
 
 export const mapErrorCodeToMessage = err => {
-  console.log('what is the err', err);
   return ERROR_MAP[err.code] || ERROR_MAP[err.reason];
 };
