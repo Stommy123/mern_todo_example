@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useModal } from 'hooks';
+import { useModal, useRequestClient } from 'hooks';
 import { Table, SectionWrapper, FormContent } from 'components';
 import { mapErrorCodeToMessage } from 'utils';
+import { ApiRoutes } from 'global_constants';
 import { COLUMN_DEFS } from './Tasks.schema';
 import classes from './Tasks.module.scss';
 
@@ -18,10 +18,11 @@ const Tasks = _ => {
   const [needToRefetch, setNeedToRefetch] = useState(true);
   const [TaskErrorModal, openTaskErrorModal] = useModal();
   const [NewTaskModal, openNewTaskModal, closeNewTaskModal] = useModal();
+  const requestClient = useRequestClient();
 
   const fetchTasks = async _ => {
     try {
-      const { data } = await axios.get('/tasks/mine');
+      const { data } = await requestClient.get(ApiRoutes.myTasks);
 
       setTasks(data.tasks || []);
       setNeedToRefetch(false);
@@ -33,7 +34,7 @@ const Tasks = _ => {
 
   const handleCompleteTask = async ({ _id, isCompleted }) => {
     try {
-      const { data } = await axios.patch(`/tasks/${_id}`, { isCompleted: !isCompleted });
+      const { data } = await requestClient.patch(`${ApiRoutes.tasks}/${_id}`, { isCompleted: !isCompleted });
 
       if (data.error || !data.success) throw new Error(mapErrorCodeToMessage(data.error));
 
@@ -46,7 +47,7 @@ const Tasks = _ => {
 
   const handleDeleteTask = async ({ _id }) => {
     try {
-      const { data } = await axios.delete(`/tasks/${_id}`);
+      const { data } = await requestClient.delete(`${ApiRoutes.tasks}/${_id}`);
 
       if (data.error || !data.success) throw new Error(mapErrorCodeToMessage(data.error));
 
@@ -65,7 +66,7 @@ const Tasks = _ => {
     e.preventDefault();
 
     try {
-      const { data } = await axios.post('/tasks', newTaskData);
+      const { data } = await requestClient.post(ApiRoutes.tasks, newTaskData);
 
       if (data.error || !data.success) throw new Error(mapErrorCodeToMessage(data.error));
 

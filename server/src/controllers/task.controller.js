@@ -1,6 +1,7 @@
 import { Task } from '../models';
 import { wrappedErrorMessage, regexString, nullifyEmptyValues, wrapSuccessResponse } from '../utils';
 
+// todo - add ability for FE to send sort option
 export const listTasks = async (req, res) => {
   try {
     const { name, description, userRef } = req.body;
@@ -11,7 +12,7 @@ export const listTasks = async (req, res) => {
       ...(userRef && { user: userRef }),
     };
 
-    const tasks = await Task.find(variables).populate('user');
+    const tasks = await Task.find(variables).populate('user').sort({ createdAt: -1 });
 
     res.send(wrapSuccessResponse({ tasks }));
   } catch (err) {
@@ -30,11 +31,12 @@ export const findTaskById = async (req, res) => {
   }
 };
 
+// todo - add ability for FE to send sort option
 export const getCurrentUserTask = async (req, res) => {
   try {
     const { _id } = req.session.currentUser || {};
 
-    const myTasks = await Task.find({ user: _id }).populate('user');
+    const myTasks = await Task.find({ user: _id }).populate('user').sort({ createdAt: -1 });
 
     res.send(wrapSuccessResponse({ tasks: myTasks }));
   } catch (err) {

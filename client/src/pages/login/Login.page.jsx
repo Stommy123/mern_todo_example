@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
-import axios from 'axios';
 import { AppContext } from 'context';
 import { FormContent, SectionWrapper } from 'components';
-import { useModal } from 'hooks';
+import { useModal, useRequestClient } from 'hooks';
 import { mapErrorCodeToMessage } from 'utils';
+import { ApiRoutes } from 'global_constants';
 import classes from './Login.module.scss';
 
 const INITIAL_FORM_DATA = {
@@ -20,6 +20,8 @@ const Login = _ => {
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [userData, setUserData] = useState(INITIAL_FORM_DATA);
 
+  const requestClient = useRequestClient();
+
   const [ErrorModal, openErrorModal] = useModal();
   const [SignUpSuccessModal, openSignUpSuccesModal] = useModal({
     onClose: _ => {
@@ -34,7 +36,9 @@ const Login = _ => {
 
     Object.keys(userData).forEach(field => formData.append(field, userData[field]));
 
-    const { data } = await axios.post('/users', formData, { headers: { 'content-type': 'multipart/form-data' } });
+    const { data } = await requestClient.post(ApiRoutes.users, formData, {
+      headers: { 'content-type': 'multipart/form-data' },
+    });
 
     if (data.error || !data.success) throw new Error(mapErrorCodeToMessage(data.error));
 

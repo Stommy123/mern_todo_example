@@ -1,10 +1,21 @@
-import { wrappedErrorMessage } from '../utils';
+import jwt from 'jwt-simple';
+import dotenv from 'dotenv';
+import { wrappedErrorMessage, parseStringifiedJSON } from '../utils';
+
+dotenv.config();
 
 const withAuth = (req, res, next) => {
   try {
+    const token = (req.headers.authorization || '').split('Bearer ')[1];
+    const decodedToken = jwt.decode(token, process.env.JWT_SECRET);
+
+    const parsedUserDataFromToken = parseStringifiedJSON(decodedToken, {});
+
     const { _id } = req.session.currentUser || {};
 
-    if (!_id) throw new Error('UNAUTHENTICATED');
+    const isCurrentUser = _id === parsedUserDataFromToken._id;
+
+    if (!isCurrentUser) throw new Error('UNAUTHENTICATED');
 
     next();
   } catch (err) {
