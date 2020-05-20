@@ -1,6 +1,5 @@
 import { Router as ExpressRouter } from 'express';
 import { RootController } from '../controllers';
-import Uploader from '../storage';
 
 const Router = ExpressRouter();
 
