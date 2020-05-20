@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import Mongo from 'connect-mongo';
@@ -37,7 +36,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.use('/', RootRoutes);
 app.use('/tasks', TaskRoutes);

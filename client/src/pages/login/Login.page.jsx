@@ -12,38 +12,45 @@ const INITIAL_FORM_DATA = {
   firstName: '',
   lastName: '',
   dob: '',
+  image: '',
 };
 
 const Login = _ => {
   const { signIn } = useContext(AppContext);
   const [isSigningUp, setIsSigningUp] = useState(false);
-  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
+  const [userData, setUserData] = useState(INITIAL_FORM_DATA);
 
   const [ErrorModal, openErrorModal] = useModal();
   const [SignUpSuccessModal, openSignUpSuccesModal] = useModal({
     onClose: _ => {
-      setFormData(INITIAL_FORM_DATA);
+      setUserData(INITIAL_FORM_DATA);
       setIsSigningUp(false);
     },
   });
 
   // no need for try/catch here because we are already catching this invocation in handleSubmit
   const handleSignUp = async _ => {
-    const { data } = await axios.post('/users', formData);
+    const formData = new FormData();
+
+    Object.keys(userData).forEach(field => formData.append(field, userData[field]));
+
+    const { data } = await axios.post('/users', formData, { headers: { 'content-type': 'multipart/form-data' } });
 
     if (data.error || !data.success) throw new Error(mapErrorCodeToMessage(data.error));
 
     openSignUpSuccesModal('User created successfully');
   };
 
-  const handleFormChange = field => evt => setFormData({ ...formData, [field]: evt.target.value });
+  const handleFormChange = field => evt => setUserData({ ...userData, [field]: evt.target.value });
+
+  const handleFileUpload = evt => setUserData({ ...userData, image: evt.target.files[0] });
 
   const handleSubmit = async e => {
     e.preventDefault();
 
     try {
-      await (isSigningUp ? handleSignUp() : signIn(formData));
-      setFormData(INITIAL_FORM_DATA);
+      await (isSigningUp ? handleSignUp() : signIn(userData));
+      setUserData(INITIAL_FORM_DATA);
     } catch (err) {
       openErrorModal(err.message);
     }
@@ -56,7 +63,7 @@ const Login = _ => {
     : ['Login in to continue!', "Don't have an account? Sign Up"];
 
   const handleSwapAuthForm = _ => {
-    setFormData(INITIAL_FORM_DATA);
+    setUserData(INITIAL_FORM_DATA);
     setIsSigningUp(!isSigningUp);
   };
 
@@ -65,7 +72,7 @@ const Login = _ => {
       <div className={classes.loginWrapper}>
         <h1>{formHeader}</h1>
         <form className={classes.loginForm} onSubmit={handleSubmit}>
-          <AuthFormContent {...formData} onChange={handleFormChange} />
+          <AuthFormContent {...userData} onChange={handleFormChange} onFileUpload={handleFileUpload} />
           <div className={classes.formActions}>
             <button type='submit'>Submit</button>
             <button onClick={handleSwapAuthForm}>{swapFormText}</button>

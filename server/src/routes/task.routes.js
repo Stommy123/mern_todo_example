@@ -1,5 +1,6 @@
 import { Router as ExpressRouter } from 'express';
 import { TaskController } from '../controllers';
+import { Task } from '../models';
 import Middleware from '../middleware';
 
 const Router = ExpressRouter();
@@ -17,9 +18,9 @@ Router.get('/mine', Middleware.withAuth, TaskController.getCurrentUserTask);
 Router.post('/', Middleware.withAuth, TaskController.createTask);
 
 // update task
-Router.patch('/:id', Middleware.withAuth, Middleware.withPermission, TaskController.updateTask);
+Router.patch('/:id', Middleware.withAuth, Middleware.withPermission(Task), TaskController.updateTask);
 
 // delete task
-Router.delete('/:id', Middleware.withAuth, Middleware.withPermission, TaskController.deleteTask);
+Router.delete('/:id', Middleware.withAuth, Middleware.withPermission(Task), TaskController.deleteTask);
 
 export default Router;

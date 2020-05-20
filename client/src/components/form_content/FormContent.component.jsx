@@ -4,13 +4,14 @@ import dayjs from 'dayjs';
 // really wanted to convert this to a json schema form that maps over an array of field objects, but figured that might be too advance
 const today = dayjs().format('YYYY-MM-DD');
 
-const SignUpFormContent = ({ email, password, firstName, lastName, dob, onChange }) => (
+const SignUpFormContent = ({ email, password, firstName, lastName, dob, onChange, onFileUpload }) => (
   <>
     <input type='text' required placeholder='First Name' value={firstName} onChange={onChange('firstName')} />
     <input type='text' required placeholder='Last Name' value={lastName} onChange={onChange('lastName')} />
     <input type='date' max={today} required placeholder='Date of Birth' value={dob} onChange={onChange('dob')} />
+    <input type='file' placeholder='Profile Picture' onChange={onFileUpload} />
     <input type='text' required placeholder='email' value={email} onChange={onChange('email')} />
-    <input type='text' required placeholder='password' value={password} onChange={onChange('password')} />
+    <input type='password' required placeholder='password' value={password} onChange={onChange('password')} />
   </>
 );
 

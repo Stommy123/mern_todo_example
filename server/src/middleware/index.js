@@ -1,5 +1,4 @@
 import { wrappedErrorMessage } from '../utils';
-import { Task } from '../models';
 
 const withAuth = (req, res, next) => {
   try {
@@ -13,12 +12,12 @@ const withAuth = (req, res, next) => {
   }
 };
 
-const withPermission = async (req, res, next) => {
+const withPermission = Resource => async (req, res, next) => {
   try {
     const { id: taskId } = req.params;
     const { _id: currentUserId } = req.session.currentUser || {};
 
-    const task = await Task.findOne({ _id: taskId });
+    const task = await Resource.findOne({ _id: taskId });
 
     if (String(task.user) !== currentUserId) throw new Error('INSUFFICIENT_PERMISSION');
 
@@ -28,6 +27,16 @@ const withPermission = async (req, res, next) => {
   }
 };
 
-const middleware = { withAuth, withPermission };
+const withImage = (req, _, next) => {
+  if (!req.file) {
+    return next();
+  }
+
+  req.body.image = req.file.secure_url;
+
+  next();
+};
+
+const middleware = { withAuth, withPermission, withImage };
 
 export default middleware;
