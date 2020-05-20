@@ -11,6 +11,7 @@ export const isObject = item => !!(typeof item === 'object' && !isArray(item) &&
 export const isEmpty = item => {
   if (item && item.hasOwnProperty('length')) return !item.length;
   if (isObject(item)) return !Object.keys(item).length;
+  return isNil(item);
 };
 
 export const cloneDeep = item => JSON.parse(JSON.stringify(item));
@@ -18,7 +19,7 @@ export const cloneDeep = item => JSON.parse(JSON.stringify(item));
 export const nullifyEmptyValues = obj =>
   Object.keys(obj).reduce((acc, key) => {
     const value = obj[key];
-    if (!isEmpty(value) || !isNil(value)) acc[key] = value;
+    if (!isEmpty(value)) acc[key] = value;
 
     return acc;
   }, {});
