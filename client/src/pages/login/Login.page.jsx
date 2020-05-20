@@ -39,11 +39,10 @@ const Login = _ => {
   const handleFormChange = field => evt => setFormData({ ...formData, [field]: evt.target.value });
 
   const handleSubmit = async e => {
+    e.preventDefault();
+
     try {
-      e.preventDefault();
-
       await (isSigningUp ? handleSignUp() : signIn(formData));
-
       setFormData(INITIAL_FORM_DATA);
     } catch (err) {
       openErrorModal(err.message);

@@ -1,88 +1,25 @@
 import { Router as ExpressRouter } from 'express';
-import { User } from '../models';
-import { wrappedErrorMessage, nullifyEmptyValues, wrapSuccessResponse } from '../utils';
+import { UserController } from '../controllers';
+import Middleware from '../middleware';
 
 const Router = ExpressRouter();
 
 // list of users
-Router.get('/', async (req, res) => {
-  try {
-    const users = await User.find(req.body);
-
-    res.send(wrapSuccessResponse({ users, success: true }));
-  } catch (err) {
-    res.send(wrappedErrorMessage('LIST_USERS_FAILED', err));
-  }
-});
+Router.get('/', UserController.listUsers);
 
 // single user by id
-Router.get('/find/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const user = await User.findById(id);
-
-    res.send(wrapSuccessResponse({ user, success: true }));
-  } catch (err) {
-    res.send(wrappedErrorMessage('FIND_USER_FAILED', err));
-  }
-});
+Router.get('/find/:id', UserController.findUserById);
 
 // current user
-Router.get('/current', async (req, res) => {
-  try {
-    const { _id } = req.session.currentUser || {};
-
-    if (!_id) throw new Error('UNAUTHORIZED_USER');
-
-    const currentUser = await User.findById(id);
-
-    res.send(wrapSuccessResponse({ user: currentUser }));
-  } catch (err) {
-    res.send(wrappedErrorMessage('FIND_USER_FAILED', err));
-  }
-});
+Router.get('/current', Middleware.withAuth, UserController.getCurrentUser);
 
 // create user
-Router.post('/', async (req, res) => {
-  try {
-    const userData = new User(req.body);
-    const newUser = await userData.save();
-
-    res.send(wrapSuccessResponse({ user: newUser }));
-  } catch (err) {
-    res.send(wrappedErrorMessage('CREATE_USER_FAILED', err));
-  }
-});
+Router.post('/', UserController.createUser);
 
 // update user
-Router.patch('/', async (req, res) => {
-  try {
-    const { _id } = req.session.currentUser || {};
-
-    if (!_id) throw new Error('UNAUTHORIZED_USER');
-
-    const updatedProperties = nullifyEmptyValues(req.body);
-
-    const updatedUser = await User.findOneAndUpdate({ _id }, updatedProperties, { new: true, useFindAndModify: false });
-
-    res.send(wrapSuccessResponse({ user: updatedUser }));
-  } catch (err) {
-    res.send(wrappedErrorMessage('UPDATE_USER_FAILED', err));
-  }
-});
+Router.patch('/', Middleware.withAuth, UserController.updateUser);
 
 // internal delete
-Router.delete('/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const deletedUser = await User.deleteOne({ _id: id });
-
-    res.send(wrapSuccessResponse({ user: deletedUser }));
-  } catch (err) {
-    res.send(wrappedErrorMessage('DELETE_USER_FAILED', err));
-  }
-});
+Router.delete('/:id', UserController.deleteUser);
 
 export default Router;
